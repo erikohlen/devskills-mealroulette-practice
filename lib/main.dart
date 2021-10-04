@@ -58,26 +58,61 @@ class _MealSelectionViewState extends State<MealSelectionView> {
     _meals = fetchMeals(_currentMealIndex);
   }
 
+  void _handleRefresh() {
+    setState(() {
+      _currentMealIndex += 4;
+      _meals = fetchMeals(_currentMealIndex);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          body: FutureBuilder<List<Meal>>(
-              future: _meals,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  print(snapshot.data);
-                  return GridView.count(
-                    crossAxisCount: 2,
-                    children: snapshot.data!
-                        .map((meal) => MealGridItem(meal))
-                        .toList(),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-                return const CircularProgressIndicator();
-              })),
+          body: Column(
+        children: [
+          Expanded(
+            flex: 8,
+            child: FutureBuilder<List<Meal>>(
+                future: _meals,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    print(snapshot.data);
+                    return Padding(
+                      padding:
+                          const EdgeInsets.only(top: 32.0, left: 16, right: 16),
+                      child: GridView.count(
+                        childAspectRatio: 0.8,
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 0,
+                        children: snapshot.data!
+                            .map((meal) => MealGridItem(meal))
+                            .toList(),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  }
+                  return const CircularProgressIndicator();
+                }),
+          ),
+          Expanded(
+            flex: 2,
+            child: GestureDetector(
+              onTap: _handleRefresh,
+              child: Container(
+                  color: Colors.grey,
+                  child: Center(
+                    child: Text(
+                      'Refresh',
+                      style: Theme.of(context).textTheme.headline5,
+                    ),
+                  )),
+            ),
+          )
+        ],
+      )),
     );
   }
 }
@@ -88,36 +123,23 @@ class MealGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
-    /* return Container(
-      width: 300,
-      height: 200,
-      color: Colors.yellow,
-    ); */
-    return Container(
-        width: 300,
-        height: 200,
-        color: Colors.yellow,
-        child: Image.network(
-          meal.pictureUrl,
-          fit: BoxFit.fitWidth,
-        ));
     return Column(
       children: [
-        Container(
-          width: 300,
-          height: 200,
-          color: Colors.yellow,
+        AspectRatio(
+          aspectRatio: 1.6,
           child: Image.network(
             meal.pictureUrl,
-            fit: BoxFit.fitWidth,
+            fit: BoxFit.cover,
           ),
         ),
-        Image.network(
-          meal.pictureUrl,
-          fit: BoxFit.fitWidth,
+        Padding(
+          padding: const EdgeInsets.only(top: 16.0),
+          child: Text(
+            meal.title,
+            softWrap: true,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
         ),
-        Text(meal.title),
       ],
     );
   }
