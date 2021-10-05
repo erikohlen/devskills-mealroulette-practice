@@ -1,8 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:mobile_boilerplate_flutter/widgets/bullet_list.dart';
 import 'models/meal.dart';
 import 'package:http/http.dart' as http;
+
+import 'widgets/bodytext_1.dart';
+import 'widgets/detail_image.dart';
+import 'widgets/headline_2.dart';
 
 class MealDetail extends StatefulWidget {
   final Meal meal;
@@ -52,17 +57,31 @@ class _MealDetailState extends State<MealDetail> {
         floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
         body: ListView(
           children: [
-            Column(
-              children: [
-                AspectRatio(
-                  aspectRatio: 1.7,
-                  child: Image.network(_meal.picture),
-                ),
-              ],
-            ),
-            Text(
-              _meal.title,
-              style: Theme.of(context).textTheme.headline4,
+            Padding(
+              padding: const EdgeInsets.only(top: 32.0, left: 16, right: 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  DetailImage(_meal.picture),
+                  Headline2(_meal.title),
+                  _meal.description != null
+                      ? BodyText1(_meal.description ?? '')
+                      : CircularProgressIndicator(),
+                  Headline2('Ingredients'),
+                  _meal.ingredients != null
+                      ? BulletList(_meal.ingredients ?? [])
+                      : Center(
+                          child: AspectRatio(
+                              aspectRatio: 1,
+                              child: Container(
+                                  width: 100,
+                                  height: 100,
+                                  child: CircularProgressIndicator()))),
+                  SizedBox(
+                    height: 100,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

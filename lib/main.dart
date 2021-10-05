@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile_boilerplate_flutter/meal_detail_view.dart';
+import 'package:mobile_boilerplate_flutter/theme.dart';
 import 'models/meal.dart';
 
 void main() {
@@ -14,9 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Meal Roulette',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: mealTheme,
       home: MealSelectionView(),
     );
   }
