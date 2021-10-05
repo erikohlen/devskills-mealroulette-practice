@@ -1,7 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_boilerplate_flutter/meal_detail_view.dart';
 import 'models/meal.dart';
 
 void main() {
@@ -123,24 +123,30 @@ class MealGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        AspectRatio(
-          aspectRatio: 1.6,
-          child: Image.network(
-            meal.pictureUrl,
-            fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => MealDetail(meal)));
+      },
+      child: Column(
+        children: [
+          AspectRatio(
+            aspectRatio: 1.6,
+            child: Image.network(
+              meal.picture,
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 16.0),
-          child: Text(
-            meal.title,
-            softWrap: true,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: Text(
+              meal.title,
+              softWrap: true,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
