@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_boilerplate_flutter/models/meal.dart';
-import 'package:mobile_boilerplate_flutter/widgets/custom_divider.dart';
+import 'package:mobile_boilerplate_flutter/common/custom_divider.dart';
 import 'package:mobile_boilerplate_flutter/screens/meal_selection_view/meal_grid_item.dart';
 import 'package:http/http.dart' as http;
+
+import '../../theme.dart';
 
 class MealSelectionView extends StatefulWidget {
   const MealSelectionView({Key? key}) : super(key: key);
@@ -74,66 +76,87 @@ class _MealSelectionViewState extends State<MealSelectionView> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          body: Column(
-        children: [
-          _isLoadingMeals
-              ? Expanded(
-                  flex: 8, child: Center(child: CircularProgressIndicator()))
-              : Expanded(
-                  flex: 8,
-                  child: FutureBuilder<List<Meal>>(
-                      future: _meals,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                                top: 32.0, left: 16, right: 16),
-                            child: GridView.count(
-                              childAspectRatio: 0.8,
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 0,
-                              children: snapshot.data!
-                                  .map((meal) => MealGridItem(meal))
-                                  .toList(),
-                            ),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Text('${snapshot.error}');
-                        }
-                        return Center(child: const CircularProgressIndicator());
-                      }),
+          backgroundColor: KColors.offWhite,
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              children: [
+                _isLoadingMeals
+                    ? Expanded(
+                        flex: 8,
+                        child: Center(child: CircularProgressIndicator()))
+                    : Expanded(
+                        flex: 8,
+                        child: FutureBuilder<List<Meal>>(
+                            future: _meals,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 32.0, left: 16, right: 16),
+                                  child: GridView.count(
+                                    childAspectRatio: 0.8,
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 16,
+                                    mainAxisSpacing: 0,
+                                    children: snapshot.data!
+                                        .map((meal) => MealGridItem(meal))
+                                        .toList(),
+                                  ),
+                                );
+                              } else if (snapshot.hasError) {
+                                return Text('${snapshot.error}');
+                              }
+                              return Center(
+                                  child: const CircularProgressIndicator());
+                            }),
+                      ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: CustomDivider(),
                 ),
-          CustomDivider(),
-          GestureDetector(
-            onTap: _isLoadingMeals
-                ? null
-                : () {
-                    setState(() {
-                      _isLoadingMeals = true;
-                    });
-                    _handleRefresh();
-                  },
-            child: Padding(
-              padding: const EdgeInsets.only(top: 24.0, bottom: 32),
-              child: Container(
-                  height: 120,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white24,
-                      border: Border.all(width: 1, color: Colors.black26)),
-                  child: Center(
-                    child: _isLoadingMeals
-                        ? Text('')
-                        : Text(
+                GestureDetector(
+                  onTap: _isLoadingMeals
+                      ? null
+                      : () {
+                          setState(() {
+                            _isLoadingMeals = true;
+                          });
+                          _handleRefresh();
+                        },
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 24.0, bottom: 32),
+                    child: Container(
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: KColors.offWhiteBright,
+                          border: Border.all(width: 1, color: Colors.black26),
+                          boxShadow: _isLoadingMeals
+                              ? null
+                              : [
+                                  BoxShadow(
+                                      color: Colors.black26, blurRadius: 8)
+                                ],
+                        ),
+                        child: Center(
+                          child: Text(
                             'Refresh',
-                            style: Theme.of(context).textTheme.headline6,
+                            style: _isLoadingMeals
+                                ? Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    ?.copyWith(
+                                      color: Colors.black12,
+                                    )
+                                : Theme.of(context).textTheme.headline6,
                           ),
-                  )),
+                        )),
+                  ),
+                )
+              ],
             ),
-          )
-        ],
-      )),
+          )),
     );
   }
 }

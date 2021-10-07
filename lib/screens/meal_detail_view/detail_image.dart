@@ -11,9 +11,21 @@ class DetailImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1.4,
-      child: Image.network(
-        imageUrl,
-        fit: BoxFit.cover,
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          border: Border.all(
+            width: 1,
+            color: Colors.black12,
+          ),
+          borderRadius: BorderRadius.all(
+            Radius.circular(4),
+          ),
+        ),
+        child: Image.network(
+          imageUrl,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }

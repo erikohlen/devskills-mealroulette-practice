@@ -18,33 +18,45 @@ class MealGridItem extends StatelessWidget {
         children: [
           AspectRatio(
             aspectRatio: 1.6,
-            child: Image.network(
-              meal.picture,
-              fit: BoxFit.cover,
-              loadingBuilder: (BuildContext context, Widget child,
-                  ImageChunkEvent? loadingProgress) {
-                if (loadingProgress == null) {
-                  return child;
-                }
-                return Container(
+            child: Container(
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1,
                   color: Colors.black12,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
-                          : null,
+                ),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(4),
+                ),
+              ),
+              child: Image.network(
+                meal.picture,
+                fit: BoxFit.cover,
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return Container(
+                    color: Colors.black12,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
                     ),
-                  ),
-                );
-              },
-              errorBuilder:
-                  (BuildContext context, Object exception, StackTrace? st) {
-                return Container(
-                  color: Colors.black12,
-                  child: Center(child: Text('No image found')),
-                );
-              },
+                  );
+                },
+                errorBuilder:
+                    (BuildContext context, Object exception, StackTrace? st) {
+                  return Container(
+                    color: Colors.black12,
+                    child: Center(child: Text('No image found')),
+                  );
+                },
+              ),
             ),
           ),
           Padding(
