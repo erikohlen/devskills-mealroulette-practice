@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_boilerplate_flutter/common/custom_progress.dart';
 import 'package:mobile_boilerplate_flutter/models/meal.dart';
 
 import '../meal_detail_view/meal_detail_view.dart';
@@ -22,8 +23,8 @@ class MealGridItem extends StatelessWidget {
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
                 border: Border.all(
-                  width: 1,
-                  color: Colors.black12,
+                  width: 2,
+                  color: Colors.black87,
                 ),
                 borderRadius: BorderRadius.all(
                   Radius.circular(4),
@@ -40,7 +41,7 @@ class MealGridItem extends StatelessWidget {
                   return Container(
                     color: Colors.black12,
                     child: Center(
-                      child: CircularProgressIndicator(
+                      child: CustomCircularProgress(
                         value: loadingProgress.expectedTotalBytes != null
                             ? loadingProgress.cumulativeBytesLoaded /
                                 loadingProgress.expectedTotalBytes!

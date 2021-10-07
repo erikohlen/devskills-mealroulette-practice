@@ -15,8 +15,8 @@ class DetailImage extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           border: Border.all(
-            width: 1,
-            color: Colors.black12,
+            width: 2,
+            color: Colors.black87,
           ),
           borderRadius: BorderRadius.all(
             Radius.circular(4),

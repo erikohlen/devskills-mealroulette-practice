@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_boilerplate_flutter/common/bodytext_1.dart';
+import 'package:mobile_boilerplate_flutter/common/custom_progress.dart';
 import 'package:mobile_boilerplate_flutter/common/headline_1.dart';
 import 'package:mobile_boilerplate_flutter/common/headline_2.dart';
 import 'package:mobile_boilerplate_flutter/screens/meal_detail_view/ingredients_list.dart';
@@ -74,13 +75,13 @@ class _MealDetailState extends State<MealDetail> {
                           ? BodyText1(_meal.description ?? '')
                           : Align(
                               alignment: Alignment.centerLeft,
-                              child: CircularProgressIndicator()),
+                              child: CustomCircularProgress()),
                       Headline2('Ingredients'),
                       _meal.ingredients != null
                           ? BulletList(_meal.ingredients ?? [])
                           : Align(
                               alignment: Alignment.centerLeft,
-                              child: CircularProgressIndicator()),
+                              child: CustomCircularProgress()),
                       SizedBox(
                         height: 100,
                       ),
@@ -90,7 +91,7 @@ class _MealDetailState extends State<MealDetail> {
               ],
             ),
             AnimatedPositioned(
-              duration: Duration(milliseconds: 300),
+              duration: Duration(milliseconds: 500),
               bottom: _showBackButton ? 0 : -140,
               curve: Curves.bounceIn,
               // left: MediaQuery.of(context).size.width / 2 - 40,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:mobile_boilerplate_flutter/common/custom_progress.dart';
 import 'package:mobile_boilerplate_flutter/models/meal.dart';
 import 'package:mobile_boilerplate_flutter/common/custom_divider.dart';
 import 'package:mobile_boilerplate_flutter/screens/meal_selection_view/meal_grid_item.dart';
@@ -83,8 +84,7 @@ class _MealSelectionViewState extends State<MealSelectionView> {
               children: [
                 _isLoadingMeals
                     ? Expanded(
-                        flex: 8,
-                        child: Center(child: CircularProgressIndicator()))
+                        flex: 8, child: Center(child: CustomCircularProgress()))
                     : Expanded(
                         flex: 8,
                         child: FutureBuilder<List<Meal>>(
@@ -108,7 +108,7 @@ class _MealSelectionViewState extends State<MealSelectionView> {
                                 return Text('${snapshot.error}');
                               }
                               return Center(
-                                  child: const CircularProgressIndicator());
+                                  child: const CustomCircularProgress());
                             }),
                       ),
                 Padding(
