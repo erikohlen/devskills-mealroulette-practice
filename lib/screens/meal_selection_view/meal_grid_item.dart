@@ -38,6 +38,13 @@ class MealGridItem extends StatelessWidget {
                   ),
                 );
               },
+              errorBuilder:
+                  (BuildContext context, Object exception, StackTrace? st) {
+                return Container(
+                  color: Colors.black12,
+                  child: Center(child: Text('No image found')),
+                );
+              },
             ),
           ),
           Padding(

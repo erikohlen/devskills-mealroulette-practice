@@ -15,22 +15,43 @@ class MealSelectionView extends StatefulWidget {
 
 class _MealSelectionViewState extends State<MealSelectionView> {
   late Future<List<Meal>> _meals;
-  int _currentMealIndex = 0;
+  List<Meal> _cachedMeals = [];
+  bool _isLoadingMeals = false;
+  int _mealOffset = 0;
 
   Future<List<Meal>> fetchMeals(int fromIndex) async {
     final response = await http.get(Uri.parse(
-        'https://playground.devskills.co/api/rest/meal-roulette-app/meals/limit/4/offset/$_currentMealIndex'));
+        'https://playground.devskills.co/api/rest/meal-roulette-app/meals/limit/4/offset/$_mealOffset'));
 
     if (response.statusCode == 200) {
-      print(jsonDecode(response.body));
-      print(jsonDecode(response.body)["meal_roulette_app_meals_aggregate"]
-          ["nodes"]);
-      print('Status 200');
       List<dynamic> _data =
           jsonDecode(response.body)["meal_roulette_app_meals_aggregate"]
               ["nodes"];
-      print(_data);
-      return _data.map((e) => Meal.fromJson(e)).toList();
+
+      List<Meal> _fetchedMeals = _data.map((e) => Meal.fromJson(e)).toList();
+      _cachedMeals += _fetchedMeals;
+      bool _isTooFewMealsFetched = _fetchedMeals.length < 4;
+      if (_isTooFewMealsFetched) {
+        print('Is too few meals!');
+        int _missingMeals = 4 - _fetchedMeals.length;
+        print('Missing meals: $_missingMeals');
+        List<Meal> _cachedMealsToAdd =
+            _cachedMeals.getRange(0, _missingMeals).toList();
+        print('_cachedMealsToAdd: ');
+        print(_cachedMealsToAdd);
+        print('_fetchedMeals: ');
+        _fetchedMeals += _cachedMealsToAdd;
+        print(_fetchedMeals);
+        setState(() {
+          _isLoadingMeals = false;
+        });
+        return _fetchedMeals;
+      }
+      setState(() {
+        _isLoadingMeals = false;
+      });
+      _cachedMeals += _fetchedMeals;
+      return _fetchedMeals;
     } else {
       throw Exception('Failed to load meals');
     }
@@ -39,13 +60,13 @@ class _MealSelectionViewState extends State<MealSelectionView> {
   @override
   void initState() {
     super.initState();
-    _meals = fetchMeals(_currentMealIndex);
+    _meals = fetchMeals(_mealOffset);
   }
 
   void _handleRefresh() {
     setState(() {
-      _currentMealIndex += 4;
-      _meals = fetchMeals(_currentMealIndex);
+      _mealOffset += 4;
+      _meals = fetchMeals(_mealOffset);
     });
   }
 
@@ -55,35 +76,44 @@ class _MealSelectionViewState extends State<MealSelectionView> {
       child: Scaffold(
           body: Column(
         children: [
-          Expanded(
-            flex: 8,
-            child: FutureBuilder<List<Meal>>(
-                future: _meals,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    print(snapshot.data);
-                    return Padding(
-                      padding:
-                          const EdgeInsets.only(top: 32.0, left: 16, right: 16),
-                      child: GridView.count(
-                        childAspectRatio: 0.8,
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 0,
-                        children: snapshot.data!
-                            .map((meal) => MealGridItem(meal))
-                            .toList(),
-                      ),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text('${snapshot.error}');
-                  }
-                  return Center(child: const CircularProgressIndicator());
-                }),
-          ),
+          _isLoadingMeals
+              ? Expanded(
+                  flex: 8, child: Center(child: CircularProgressIndicator()))
+              : Expanded(
+                  flex: 8,
+                  child: FutureBuilder<List<Meal>>(
+                      future: _meals,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                                top: 32.0, left: 16, right: 16),
+                            child: GridView.count(
+                              childAspectRatio: 0.8,
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 0,
+                              children: snapshot.data!
+                                  .map((meal) => MealGridItem(meal))
+                                  .toList(),
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('${snapshot.error}');
+                        }
+                        return Center(child: const CircularProgressIndicator());
+                      }),
+                ),
           CustomDivider(),
           GestureDetector(
-            onTap: _handleRefresh,
+            onTap: _isLoadingMeals
+                ? null
+                : () {
+                    setState(() {
+                      _isLoadingMeals = true;
+                    });
+                    _handleRefresh();
+                  },
             child: Padding(
               padding: const EdgeInsets.only(top: 24.0, bottom: 32),
               child: Container(
@@ -93,10 +123,12 @@ class _MealSelectionViewState extends State<MealSelectionView> {
                       color: Colors.white24,
                       border: Border.all(width: 1, color: Colors.black26)),
                   child: Center(
-                    child: Text(
-                      'Refresh',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
+                    child: _isLoadingMeals
+                        ? Text('')
+                        : Text(
+                            'Refresh',
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
                   )),
             ),
           )
