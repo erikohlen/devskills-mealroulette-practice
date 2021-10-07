@@ -11,14 +11,12 @@ class BulletList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: bullets
-          .map((String bulletText) => Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                child: Row(
-                  children: [
-                    Text('- '),
-                    Text(bulletText,
-                        style: Theme.of(context).textTheme.bodyText1),
-                  ],
+          .map((String bulletText) => Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                  child: Text('- $bulletText',
+                      style: Theme.of(context).textTheme.bodyText1),
                 ),
               ))
           .toList(),

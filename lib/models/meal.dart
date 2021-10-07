@@ -18,8 +18,8 @@ class Meal {
       id: json['id'],
       title: json['title'],
       picture: json['picture'],
-      description: json['description'] ?? '',
-      ingredients: json['ingredients'] ?? [],
+      description: json['description'] ?? null,
+      ingredients: json['ingredients'] ?? null,
     );
   }
 }

@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:mobile_boilerplate_flutter/widgets/bullet_list.dart';
-import 'models/meal.dart';
+import 'package:mobile_boilerplate_flutter/common/bodytext_1.dart';
+import 'package:mobile_boilerplate_flutter/screens/meal_detail_view/ingredients_list.dart';
+import '../../models/meal.dart';
 import 'package:http/http.dart' as http;
 
-import 'widgets/bodytext_1.dart';
-import 'widgets/detail_image.dart';
-import 'widgets/headline_2.dart';
+import '../../widgets/custom_divider.dart';
+import 'detail_image.dart';
+import '../../widgets/headline_2.dart';
 
 class MealDetail extends StatefulWidget {
   final Meal meal;
@@ -48,13 +49,33 @@ class _MealDetailState extends State<MealDetail> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+        bottomNavigationBar: Container(
+          width: MediaQuery.of(context).size.width,
+          height: 100,
+          color: Colors.transparent,
+          child: Column(
+            children: [
+              CustomDivider(),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          //color: Colors.white24,
+                          border: Border.all(width: 1, color: Colors.black26)),
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )),
+                ),
+              ),
+            ],
+          ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
         body: ListView(
           children: [
             Padding(
@@ -66,17 +87,15 @@ class _MealDetailState extends State<MealDetail> {
                   Headline2(_meal.title),
                   _meal.description != null
                       ? BodyText1(_meal.description ?? '')
-                      : CircularProgressIndicator(),
+                      : Align(
+                          alignment: Alignment.centerLeft,
+                          child: CircularProgressIndicator()),
                   Headline2('Ingredients'),
                   _meal.ingredients != null
                       ? BulletList(_meal.ingredients ?? [])
-                      : Center(
-                          child: AspectRatio(
-                              aspectRatio: 1,
-                              child: Container(
-                                  width: 100,
-                                  height: 100,
-                                  child: CircularProgressIndicator()))),
+                      : Align(
+                          alignment: Alignment.centerLeft,
+                          child: CircularProgressIndicator()),
                   SizedBox(
                     height: 100,
                   ),

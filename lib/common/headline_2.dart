@@ -11,13 +11,12 @@ class Headline2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 32.0, bottom: 8),
-      child: Row(
-        children: [
-          Text(
-            text,
-            style: Theme.of(context).textTheme.headline2,
-          ),
-        ],
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          text,
+          style: Theme.of(context).textTheme.headline2,
+        ),
       ),
     );
   }
